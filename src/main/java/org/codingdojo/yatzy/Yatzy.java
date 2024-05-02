@@ -1,6 +1,6 @@
-package org.codingdojo.yatzy1;
+package org.codingdojo.yatzy;
 
-public class Yatzy1 {
+public class Yatzy {
 
     public static int chance(int d1, int d2, int d3, int d4, int d5)
     {
@@ -58,8 +58,11 @@ public class Yatzy1 {
     }
 
     protected int[] dice;
-    public Yatzy1() {}
-    public Yatzy1(int d1, int d2, int d3, int d4, int _5)
+    
+    public Yatzy() {
+    }
+    
+    public Yatzy(int d1, int d2, int d3, int d4, int d5)
     {
         this();
         dice = new int[5];
@@ -67,7 +70,7 @@ public class Yatzy1 {
         dice[1] = d2;
         dice[2] = d3;
         dice[3] = d4;
-        dice[4] = _5;
+        dice[4] = d5;
     }
 
     public int fours()
@@ -91,32 +94,8 @@ public class Yatzy1 {
                 s = s + 5;
         return s;
     }
-
-    public int sixes()
-    {
-        int sum = 0;
-        for (int at = 0; at < dice.length; at++) 
-            if (dice[at] == 6)
-                sum = sum + 6;
-        return sum;
-    }
-
-    public int score_pair(int d1, int d2, int d3, int d4, int d5)
-    {
-        int[] counts = new int[6];
-        counts[d1-1]++;
-        counts[d2-1]++;
-        counts[d3-1]++;
-        counts[d4-1]++;
-        counts[d5-1]++;
-        int at;
-        for (at = 0; at != 6; at++)
-            if (counts[6-at-1] >= 2)
-                return (6-at)*2;
-        return 0;
-    }
-
-    public static int two_pair(int d1, int d2, int d3, int d4, int d5)
+    
+    public static int twoPairs(int d1, int d2, int d3, int d4, int d5)
     {
         int[] counts = new int[6];
         counts[d1-1]++;
@@ -130,19 +109,19 @@ public class Yatzy1 {
             if (counts[6-i-1] >= 2) {
                 n++;
                 score += (6-i);
-            }        
+            }
         if (n == 2)
             return score * 2;
         else
             return 0;
     }
-
-    public static int four_of_a_kind(int _1, int _2, int d3, int d4, int d5)
+    
+    public static int fourOfAKind(int d1, int d2, int d3, int d4, int d5)
     {
         int[] tallies;
         tallies = new int[6];
-        tallies[_1-1]++;
-        tallies[_2-1]++;
+        tallies[d1 - 1]++;
+        tallies[d2 - 1]++;
         tallies[d3-1]++;
         tallies[d4-1]++;
         tallies[d5-1]++;
@@ -151,8 +130,8 @@ public class Yatzy1 {
                 return (i+1) * 4;
         return 0;
     }
-
-    public static int three_of_a_kind(int d1, int d2, int d3, int d4, int d5)
+    
+    public static int threeOfAKind(int d1, int d2, int d3, int d4, int d5)
     {
         int[] t;
         t = new int[6];
@@ -165,6 +144,48 @@ public class Yatzy1 {
             if (t[i] >= 3)
                 return (i+1) * 3;
         return 0;
+    }
+    
+    public static int fullHouse(int d1, int d2, int d3, int d4, int d5) {
+        int[] tallies;
+        boolean hasPair = false;
+        int i;
+        int pairIndex = 0;
+        boolean hasThreeOfAKind = false;
+        int threeOfAKindIndex = 0;
+        
+        
+        tallies = new int[6];
+        tallies[d1 - 1] += 1;
+        tallies[d2 - 1] += 1;
+        tallies[d3 - 1] += 1;
+        tallies[d4 - 1] += 1;
+        tallies[d5 - 1] += 1;
+        
+        for (i = 0; i != 6; i += 1)
+            if (tallies[i] == 2) {
+                hasPair = true;
+                pairIndex = i + 1;
+            }
+        
+        for (i = 0; i != 6; i += 1)
+            if (tallies[i] == 3) {
+                hasThreeOfAKind = true;
+                threeOfAKindIndex = i + 1;
+            }
+        
+        if (hasPair && hasThreeOfAKind)
+            return pairIndex * 2 + threeOfAKindIndex * 3;
+        else
+            return 0;
+    }
+    
+    public int sixes() {
+        int sum = 0;
+        for (int die : dice)
+            if (die == 6)
+                sum = sum + 6;
+        return sum;
     }
 
 
@@ -203,42 +224,20 @@ public class Yatzy1 {
             return 20;
         return 0;
     }
-
-    public static int fullHouse(int d1, int d2, int d3, int d4, int d5)
+    
+    public int onePair(int d1, int d2, int d3, int d4, int d5)
     {
-        int[] tallies;
-        boolean _2 = false;
-        int i;
-        int _2_at = 0;
-        boolean _3 = false;
-        int _3_at = 0;
-
-
-
-
-        tallies = new int[6];
-        tallies[d1-1] += 1;
-        tallies[d2-1] += 1;
-        tallies[d3-1] += 1;
-        tallies[d4-1] += 1;
-        tallies[d5-1] += 1;
-
-        for (i = 0; i != 6; i += 1)
-            if (tallies[i] == 2) {
-                _2 = true;
-                _2_at = i+1;
-            }
-
-        for (i = 0; i != 6; i += 1)
-            if (tallies[i] == 3) {
-                _3 = true;
-                _3_at = i+1;
-            }
-
-        if (_2 && _3)
-            return _2_at * 2 + _3_at * 3;
-        else
-            return 0;
+        int[] counts = new int[6];
+        counts[d1 - 1]++;
+        counts[d2 - 1]++;
+        counts[d3 - 1]++;
+        counts[d4 - 1]++;
+        counts[d5 - 1]++;
+        int at;
+        for (at = 0; at != 6; at++)
+            if (counts[6 - at - 1] >= 2)
+                return (6 - at) * 2;
+        return 0;
     }
 }
 
