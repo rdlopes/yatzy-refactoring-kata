@@ -1,6 +1,7 @@
 package org.codingdojo.yatzy;
 
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
@@ -9,11 +10,15 @@ import static java.util.stream.Collectors.summingInt;
 
 public class Yatzy {
   
+  public static final int YATZY_SCORE = 50;
+  public static final int SMALL_STRAIGHT_SCORE = 15;
+  public static final int LARGE_STRAIGHT_SCORE = 20;
+  
   private final Map<Integer, Integer> valuesCounted;
   
-  public Yatzy(int d1, int d2, int d3, int d4, int d5) {
-    valuesCounted = Stream.of(d1, d2, d3, d4, d5)
-                          .collect(groupingBy(identity(), summingInt(value -> 1)));
+  public Yatzy(int dice1, int dice2, int dice3, int dice4, int dice5) {
+    valuesCounted = Stream.of(dice1, dice2, dice3, dice4, dice5)
+                          .collect(countingDiceValues());
   }
   
   public int chance() {
@@ -23,10 +28,8 @@ public class Yatzy {
                         .sum();
   }
   
-  public int yatzy() {
-    return valuesCounted.size() == 1
-        ? 50
-        : 0;
+  private static Collector<Integer, ?, Map<Integer, Integer>> countingDiceValues() {
+    return groupingBy(identity(), summingInt(value -> 1));
   }
   
   public int ones() {
@@ -90,15 +93,21 @@ public class Yatzy {
         : 0;
   }
   
+  public int yatzy() {
+    return valuesCounted.size() == 1
+        ? YATZY_SCORE
+        : 0;
+  }
+  
   public int smallStraight() {
     return allValuesPresentExcept(6)
-        ? 15
+        ? SMALL_STRAIGHT_SCORE
         : 0;
   }
   
   public int largeStraight() {
     return allValuesPresentExcept(1)
-        ? 20
+        ? LARGE_STRAIGHT_SCORE
         : 0;
   }
   
